@@ -1,19 +1,18 @@
 '''
+This is a modified version of https://github.com/Jackson-S/Wiktionary-Translation-Extractor that outputs only
+Cantonese (yue) entries.
+
 Takes an XML backup of English Wiktionary (all articles and pages) and outputs an
 SQLite database of all translations with the schema:
 
-CREATE TABLE Translations (
-    word STRING NON NULL,        -- The root word that is translated
-    meaning STRING,              -- The related meaning or sense of the word, for the translation
-    language STRING NON NULL,    -- The language of the translation as an ISO code
-    translation STRING NON NULL, -- The actual translation, in the native script
-    isEquivalent BOOL NON NULL,  -- Specifies if the translation is direct or if it is a phrase equivalent
-    gender STRING,               -- The gender of the translation, if any
-    scriptCode STRING,           -- The script the translation is in as an ISO code
-    transliteration STRING,      -- The transliteration of the translation into latin characters, or for
-    alternate STRING,            -- Alternate forms of the translation, i.e. kana for a kanji translation in Japanese
-    literal STRING,              -- The literal meaning of a translation in English
-    qualifier STRING             -- Any qualifiers or extra information relating to a translation
+CREATE TABLE EnglishTranslations (
+    english TEXT NOT NULL, -- English Translation
+    meaning TEXT NOT NULL, -- Any further explanation of en translation i.e. "distant to speaker and listener"
+    translation TEXT NOT NULL, -- Chinese Word
+    transliteration TEXT, -- Cantonese (Jyutping) transliteration of the Chinese characters
+    alternate TEXT, -- Alternate forms of the word
+    literal TEXT, -- Literal meaning of the translation
+    qualifier TEXT -- Any extra information
 )
 
 The progress bar only offers an approximation of the time taken, based on the size of the 2019/11/20 Wiktionary dump.
@@ -193,17 +192,13 @@ cursor = db.cursor()
 
 cursor.execute("""
 CREATE TABLE Translations (
-    word STRING NON NULL,        -- The root word that is translated
-    meaning STRING,              -- The related meaning or sense of the word, for the translation
-    language STRING NON NULL,    -- The language of the translation as an ISO code
-    translation STRING NON NULL, -- The actual translation, in the native script
-    isEquivalent BOOL NON NULL,  -- Specifies if the translation is direct or if it is a phrase equivalent
-    gender STRING,               -- The gender of the translation, if any
-    scriptCode STRING,           -- The script the translation is in as an ISO code
-    transliteration STRING,      -- The transliteration of the translation into latin characters, or for
-    alternate STRING,            -- Alternate forms of the translation, i.e. kana for a kanji translation in Japanese
-    literal STRING,              -- The literal meaning of a translation in English
-    qualifier STRING             -- Any qualifiers or extra information relating to a translation
+    english TEXT NOT NULL, -- English Translation
+    meaning TEXT NOT NULL, -- Any further explanation of en translation i.e. "distant to speaker and listener"
+    translation TEXT NOT NULL, -- Chinese Word
+    transliteration TEXT, -- Cantonese (Jyutping) transliteration of the Chinese characters
+    alternate TEXT, -- Alternate forms of the word
+    literal TEXT, -- Literal meaning of the translation
+    qualifier TEXT -- Any extra information
 )
 """)
 
@@ -214,17 +209,13 @@ for word, meaning_group in translations.items():
                 parameters = (
                     word,
                     group.meaning,
-                    translation.language_code,
                     translation.translation,
-                    translation.is_equivalent_term,
-                    translation.gender,
-                    translation.script_code,
                     translation.transliteration,
                     translation.alternate_form,
                     translation.literal_translation,
                     translation.qualifier
                 )
-                cursor.execute("INSERT INTO Translations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", parameters)
+                cursor.execute("INSERT INTO Translations VALUES (?, ?, ?, ?, ?, ?, ?)", parameters)
 
 cursor.close()
 db.commit()
