@@ -1,0 +1,281 @@
+@charset "UTF-8";
+@namespace d url(http://www.apple.com/DTDs/DictionaryService-1.0.rng);
+
+/* Taken from Apple template */
+d|entry {
+}
+
+h1	{
+  font-size: 150%;
+}
+
+h3	{
+  font-size: 100%;
+}
+
+span.column {
+  display: block;
+  border: solid 2px #c0c0c0;
+  margin-left: 2em;
+  margin-right: 2em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding: 0.5em;
+}
+/* End Apple Template */
+
+
+/* Element styles */
+p {
+  margin: 0px 0;
+  width: min-content;
+  white-space: nowrap;
+}
+
+summary {
+  cursor: pointer !important;
+}
+
+summary:focus {
+  outline: none;
+}
+/* End Element Styles */
+
+/* Class styles */
+.section_heading {
+  cursor: default;
+  font-size: small;
+  font-weight: normal;
+  margin: 2px 0;
+}
+
+.sentence {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.sentence > p {
+  white-space: normal;
+  width: 100%;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 5px;
+  margin: 0 2px;
+  background: rgb(230,230,230);
+  width: min-content;
+  height: min-content;
+  white-space: nowrap;
+  border-radius: 5px;
+  font-size: 80%;
+}
+
+.translation_info {
+  grid-column: 2;
+  display: flex;
+}
+
+.translation_info p {
+  padding-right: 5px;
+}
+
+.translation_block {
+  grid-column: 2;
+}
+
+.alternate_form {
+  font-size: 0.9em;
+}
+
+/* End class styles */
+
+/* ID styles */
+#header > h1 {
+  display: inline-block;
+}
+
+#sub_header > section {
+  margin: 0 0 10px 0;
+}
+
+#sub_header > details, 
+#sub_header > section,
+#stroke_order {
+  background-color: rgb(230,230,230);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#sub_header > #readings {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+#stroke_order > img {
+  width: 100%;
+}
+
+#definitions {
+  border: 1px solid lightgrey;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+#definitions .section_heading {
+  padding: 10px 0 0 10px;
+  margin: 0;
+}
+
+#definitions > article {
+  display: grid;
+  grid-gap: 10px;
+  margin: 10px;
+  padding-bottom: 5px;
+  border-bottom: dotted 1.5px lightgray;
+}
+
+#definitions > article {
+  grid-template-columns: min-content 1fr min-content;
+}
+
+#definitions > article:last-of-type {
+  border-bottom: none;
+}
+
+#definitions .translation_line {
+  align-self: center;
+  grid-column: 2;
+}
+
+#definitions .translation_line > p {
+  display: inline;
+  white-space: normal;
+  width: 100%;
+  margin-right: 5px;
+}
+
+#definitions .number {
+  grid-column: 1;
+  font-size: smaller;
+  align-self: center;
+  color: grey;
+}
+
+#definitions .badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-self: center;
+  overflow-x: hidden;
+}
+
+#containing_kanji a, 
+#similar_kanji a {
+  color: black;
+  text-decoration: none;
+}
+
+#similar_kanji .reading,
+#containing_kanji .reading {
+  display: grid;
+  grid-template-columns: 1.5em calc(100% - 1.5em - 10px);   /* Safari being awful as usual...*/
+  grid-gap: 10px;
+}
+
+#similar_kanji p,
+#containing_kanji p {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* End ID styles */
+
+/* Dark mode style */
+@media (prefers-dark-interface)
+{
+  /* Set all text to white */
+  body, #containing_kanji a {
+    color: white;
+  }
+  
+  /* Change the background colour of all elements with a background to be darker */
+  #sub_header > details, #sub_header > section, .badge {
+    background-color: rgb(80,80,80);
+  }
+}
+/* End dark mode style */
+
+/* Popup styles
+ * All prefaced with html.apple_client-panel
+ * These styles apply to the popup definition box that appears
+ * on a three finger tap or force touch on a word.
+ *
+ * They are all prefaced with html.apple_client-panel.
+ */
+/* Hide subheader and badges to reduce onscreen elements */
+html.apple_client-panel * {
+  font-family: sans-serif;
+}
+
+html.apple_client-panel #sub_header,
+html.apple_client-panel #stroke_order,
+html.apple_client-panel .badge,
+html.apple_client-panel .section_heading,
+html.apple_client-panel .translation_info {
+  display: none;
+}
+
+/* Set the title font to be small */
+html.apple_client-panel #header h1 {
+  font-size: small;
+  margin: 0;
+}
+
+/* Remove background colouring and replace with a border element */
+html.apple_client-panel #definitions,
+html.apple_client-panel #definitions > article,
+html.apple_client-panel #english_translations, 
+html.apple_client-panel #english_translations > article {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Reduce spacing inbetween definitions in translation text */
+html.apple_client-panel #definitions .translation_line > p, 
+html.apple_client-panel #english_translations .translation_line > p {
+  margin-right: 2px;
+}
+
+/* Reduce the size of the definition numbers */
+html.apple_client-panel #definitions .number, 
+html.apple_client-panel #english_translations .number {
+  font-size: 10px;
+}
+/* End popup style */
+
+/* Spotlight Style 
+ * The apple_client-spotlight class is applied using Javascript on the 
+ * entry page, as there is not normally a way of differentiating between 
+ * them using only CSS easily.
+ */
+html.apple_client-spotlight * {
+  font-family: sans-serif;
+}
+
+/* Remove the margin from the header */
+html.apple_client-spotlight #header h1 {
+  margin: 0;
+}
+
+/* Hide the subheader information */
+html.apple_client-spotlight #sub_header > *,
+html.apple_client-spotlight #stroke_order {
+  display: none;
+}
+
+html.apple_client-spotlight #sub_header > .reading {
+  display: block;
+}
+/* End spotlight style */

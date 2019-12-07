@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DCSDictionaryLanguages</key>
+	<array>
+		<dict>
+			<key>DCSDictionaryDescriptionLanguage</key>
+			<string>yue</string>
+			<key>DCSDictionaryIndexLanguage</key>
+			<string>en</string>
+		</dict>
+		<dict>
+			<key>DCSDictionaryDescriptionLanguage</key>
+			<string>en</string>
+			<key>DCSDictionaryIndexLanguage</key>
+			<string>yue</string>
+		</dict>
+	</array>
+	<key>Bundle display name</key>
+	<string>Cantonese - English Dictionary</string>
+	<key>DCSDictionaryPrimaryLanguage</key>
+	<string>yue</string>
+	<key>DCSDictionaryCSS</key>
+	<string>CantoneseDictionary.css</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.jackson-s.dictionary.yue-en.CantoneseDictionary</string>
+	<key>CFBundleName</key>
+	<string>Cantonese - English</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>DCSDictionaryManufacturerName</key>
+	<string>Jackson S</string>
+	<key>DCSDictionaryPrefsHTML</key>
+	<string>CantoneseDictionary_prefs.html</string>
+	<key>DCSDictionaryUseSystemAppearance</key>
+	<true/>
+	<key>DCSDictionaryNativeDisplayName</key>
+	<string>Cantonese - English Dictionary</string>
+</dict>
+</plist>

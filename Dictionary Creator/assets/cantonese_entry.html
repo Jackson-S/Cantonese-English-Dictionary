@@ -1,0 +1,38 @@
+<body>
+    <script>var html=document.getElementsByTagName("html")[0];var classes=html.className.split(" ");if(classes.indexOf("apple_client-application")!=-1){if(classes.indexOf("apple_display-separateview")==-1){html.classList.add("apple_client-spotlight")}}</script>
+    <section id="header">
+        <h1 id="page_title">{{ entry.page_title }}</h1>
+        {% if entry.readings | count == 1 %}
+        <h1 id="primary_reading">（{{ entry.readings[0]　}}）</h1>
+        {% endif %}
+    </section>
+
+    <section id="sub_header">
+        {% if entry.readings | count > 1 %}
+        <section id="readings">
+            <section id="onyomi">
+                <h3 class="section_heading" apple_mouseover_disable="1">Readings</h3>
+                {% for reading in entry.readings %}
+                <div class="reading">
+                    <p>{{ reading }}</p>
+                </div>
+                {% endfor %}
+            </section>
+        </section>
+        {% endif %}
+    </section>
+
+    <section id="definitions">
+        <h3 class="section_heading" apple_mouseover_disable="1">Definitions</h3>
+        {% for definition in entry.definitions %}
+        <article>
+            <p class="number" apple_mouseover_disable="1">{{ loop.index }}</p>
+            <div class="translation_line">
+                <p class="translation">{{ definition }}</p>
+            </div>
+            <div class="badges">
+            </div>
+        </article>
+        {% endfor %}
+    </section>
+</body>
