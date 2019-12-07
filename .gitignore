@@ -124,7 +124,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .DS_Store
-Chinese Dictionary Converter/cccanto-webdist.txt
-Chinese Dictionary Converter/cccedict-canto-readings-150923.txt
-Chinese Dictionary Converter/cedict_1_0_ts_utf-8_mdbg.txt
-Chinese Dictionary Converter/database.db
+*.xml
+*.db
+*.txt
