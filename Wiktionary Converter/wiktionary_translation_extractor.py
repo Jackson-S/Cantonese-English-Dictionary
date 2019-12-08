@@ -33,9 +33,8 @@ import os
 import re
 
 
-# Define which languages you want in the output database. None or [] for all languages.
-DATABASE_OUTPUT_NAME = "database.db"
-LANGAUGES = ["yue"]
+# Define the input and output database name
+DATABASE_NAME = "database.db"
 
 
 @dataclass
@@ -130,10 +129,22 @@ if len(sys.argv) < 2:
     print(f"USAGE: python3 {sys.argv[0]} INPUT_FILE.xml")
     sys.exit(1)
 
-# Ensure the database doesn't already exist
-if os.path.isfile(DATABASE_OUTPUT_NAME):
-    print("Database already exists!")
-    sys.exit(1)
+
+db = sqlite3.connect(DATABASE_NAME)
+cursor = db.cursor()
+
+readings_query = cursor.execute("SELECT traditional, simplified, reading FROM Readings NATURAL JOIN Entries")
+cantonese_readings = {}
+for traditional, simplified, reading in readings_query.fetchall():
+    if traditional in cantonese_readings and reading not in cantonese_readings[traditional]:
+        cantonese_readings[traditional].append(reading)
+    elif traditional not in cantonese_readings:
+        cantonese_readings[traditional] = [reading]
+
+    if simplified in cantonese_readings and reading not in cantonese_readings[simplified]:
+        cantonese_readings[simplified].append(reading)
+    elif simplified not in cantonese_readings:
+        cantonese_readings[simplified] = [reading]
 
 translations = defaultdict(list)
 
@@ -165,7 +176,14 @@ with open(sys.argv[1]) as in_file:
             # Finish parsing translations
             recording = False
             if group.translations:
-                translations[page_title].append(group)
+                # Check if there was a Cantonese translation recorded for the group
+                cantonese_translations = {x.translation for x in group.translations if x.language_code == "yue"}
+
+                # If there are no Cantonese translations append as is, otherwise filter out Mandarin translations before appending
+                if cantonese_translations:
+                    group.translations = [x for x in group.translations if x.language_code == "yue"]
+            
+            translations[page_title].append(group)
         
         elif "{{trans-mid}}" in line:
             # Mid is useless to us, defines layout on Wiktionary
@@ -185,13 +203,17 @@ with open(sys.argv[1]) as in_file:
                     except TypeError as e:
                         continue
                     new_entry.qualifier = qualifier
-                    group.translations.append(new_entry)
-
-db = sqlite3.connect(DATABASE_OUTPUT_NAME)
-cursor = db.cursor()
+                    # Check if the new entry is Mandarin, and if so check it has a Cantonese reading
+                    if new_entry.language_code == "cmn":
+                        if new_entry.translation in cantonese_readings:
+                            # TODO Handle entries with multiple readings
+                            new_entry.transliteration = cantonese_readings[new_entry.translation][0]
+                            group.translations.append(new_entry)
+                    elif new_entry.language_code == "yue":
+                        group.translations.append(new_entry)
 
 cursor.execute("""
-CREATE TABLE Translations (
+CREATE TABLE EnglishTranslations (
     english TEXT NOT NULL, -- English Translation
     meaning TEXT NOT NULL, -- Any further explanation of en translation i.e. "distant to speaker and listener"
     translation TEXT NOT NULL, -- Chinese Word
@@ -205,17 +227,16 @@ CREATE TABLE Translations (
 for word, meaning_group in translations.items():
     for group in meaning_group:
         for translation in group.translations:
-            if translation.language_code in LANGAUGES or not LANGAUGES:
-                parameters = (
-                    word,
-                    group.meaning,
-                    translation.translation,
-                    translation.transliteration,
-                    translation.alternate_form,
-                    translation.literal_translation,
-                    translation.qualifier
-                )
-                cursor.execute("INSERT INTO Translations VALUES (?, ?, ?, ?, ?, ?, ?)", parameters)
+            parameters = (
+                word,
+                group.meaning,
+                translation.translation,
+                translation.transliteration,
+                translation.alternate_form,
+                translation.literal_translation,
+                translation.qualifier
+            )
+            cursor.execute("INSERT INTO EnglishTranslations VALUES (?, ?, ?, ?, ?, ?, ?)", parameters)
 
 cursor.close()
 db.commit()

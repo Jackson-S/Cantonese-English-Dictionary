@@ -59,7 +59,7 @@ def create_english_pages(database_path: str) -> List[EnglishEntry]:
 
     result: Dict[str, EnglishEntry] = dict()
 
-    query = cursor.execute("SELECT * FROM Translations")
+    query = cursor.execute("SELECT * FROM EnglishTranslations")
 
     for en, mean, trans, translit, alt, lit, qual in query.fetchall():
         if en not in result:
