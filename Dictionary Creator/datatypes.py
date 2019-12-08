@@ -36,7 +36,7 @@ class CantoneseEntry(Entry):
     def add_definition(self, definition: str):
         # Needed as SQLite "helpfully" makes numeric definitions int type regardless of schema
         definition = str(definition).strip()
-        if definition != "":
+        if definition != "" and definition not in self.definitions:
             self.definitions.append(definition)
 
     def add_reading(self, reading: str):

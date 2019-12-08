@@ -30,6 +30,7 @@ CC-Canto & CC-Canto readings: http://cccanto.org/download.html
 CC-CEDICT: https://www.mdbg.net/chinese/dictionary?page=cc-cedict
 """
 
+import re
 import sqlite3
 
 DATABASE_NAME = "database.db"
@@ -83,8 +84,16 @@ with open("cedict_1_0_ts_utf-8_mdbg.txt") as in_file:
         # traditional simplified [Mandarin] /def1/def2/.../defn/
         traditional, simplified = line.split(" ")[:2]
         mandarin = line[line.index("[")+1:line.index("]")]
+        definitions = line[line.index("/")+1:line.rfind("/")].split("/")
         # Filter out cross references
-        definitions = filter(lambda x: "CL:" not in x, line[line.index("/")+1:-2].split("/"))
+        definitions = filter(lambda x: "CL:" not in x, definitions)
+        # Filter out Taiwanese pronunciations
+        definitions = filter(lambda x: "Taiwan pr." not in x, definitions)
+        # Filter out alternate pronunciations
+        definitions = filter(lambda x: "also pr." not in x, definitions)
+        # Filter out mandarin pronunciations in definitions
+        definitions = map(lambda x: re.sub(r"\[.*?\]", "", x), definitions)
+        definitions = [*definitions]
 
         index_counter += 1
         word_mappings[(traditional, simplified, mandarin)] = index_counter
@@ -126,8 +135,18 @@ with open("cccanto-webdist.txt") as in_file:
         traditional, simplified = line.split(" ")[:2]
         mandarin = line[line.index("[")+1:line.index("]")]
         cantonese = line[line.index("{")+1:line.index("}")]
+        
+        # Trim to the start and end of the definitions
+        definitions = line[line.index("/")+1:line.rfind("/")]
+        # Replace slashes with spaces around them with the comment marker (definitely not used character), 
+        # they are one continuous definition
+        definitions = definitions.replace(" / ", "#")
+        # Split the definitions
+        definitions = definitions.split("/")
+        # Change the #es back to /es
+        definitions = [x.replace("#", "/") for x in definitions]
         # Filter out cross references
-        definitions = filter(lambda x: " M: " not in x, line[line.index("/")+1:-2].split("/"))
+        definitions = filter(lambda x: " M: " not in x, definitions)
         # Remove whitespace from definitions
         definitions = map(lambda x: x.strip(), definitions)
 
