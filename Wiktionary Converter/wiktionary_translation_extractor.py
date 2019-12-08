@@ -24,7 +24,6 @@ Note that wiktionary dumps are huge (>6gb of pure text) and will probably break 
 from typing import List, Optional, Dict
 from collections import defaultdict
 from dataclasses import dataclass
-from tqdm import tqdm
 
 import sqlite3
 import html
@@ -153,7 +152,7 @@ with open(sys.argv[1]) as in_file:
     recording = False
     group = None
 
-    for line in tqdm(in_file, total=209_373_622):
+    for line in in_file:
         if "<title>" in line:
             # Get the page title
             page_title = line.strip()[7:-8]
