@@ -27,8 +27,7 @@ def get_stats(pages):
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("canto_dict_db", type=str)
-    parser.add_argument("wiktionary_db", type=str)
+    parser.add_argument("database", type=str)
     parser.add_argument("-o", type=str)
     return parser.parse_args()
 
@@ -77,8 +76,8 @@ def main():
     pages: Dict[str, Entry] = dict()
 
     pages = set([
-        *create_cantonese_entries(args.canto_dict_db),
-        *create_english_pages(args.wiktionary_db)
+        *create_cantonese_entries(args.database),
+        *create_english_pages(args.database)
     ])
 
     dictionary = AppleDictionaryWriter(pages)

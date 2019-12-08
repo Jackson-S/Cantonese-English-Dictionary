@@ -1,7 +1,6 @@
 import xml.etree.ElementTree as ElementTree
 
 from typing import Set
-from itertools import chain
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from datatypes import *
 
@@ -33,29 +32,30 @@ class AppleDictionaryWriter:
             self.generate_entry(page)
 
     def generate_entry(self, page: Entry):
-        # Create the primary node
-        xml_page = ElementTree.SubElement(self.root, "d:entry", {"id": page.page_id, "d:title": page.page_title})
-
-        # Create an index for the initial character
-        attribs = {"d:title": page.page_title, "d:value": page.page_title}
-        ElementTree.SubElement(xml_page, "d:index", attribs)
-
-        readings = []
+        entry_node = None
 
         if isinstance(page, CantoneseEntry):
-            readings = [x for x in page.readings]
+            entry_node = ElementTree.SubElement(self.root, "d:entry", {"id": page.page_id, "d:title": page.traditional})
 
-        for reading in readings:
-            attribs = {"d:yomi": reading, "d:title": page.page_title, "d:value": reading}
-            ElementTree.SubElement(xml_page, "d:index", attribs)
+            ElementTree.SubElement(entry_node, "d:index", {"d:title": page.traditional, "d:value": page.traditional})
+            # Add an index for the simplified character variant if there is one
+            if page.traditional != page.simplified:
+                ElementTree.SubElement(entry_node, "d:index", {"d:title": page.traditional, "d:value": page.simplified})
 
-        html_page = self.generate_page(page)
+            # Add readings
+            for reading in page.readings:
+                ElementTree.SubElement(entry_node, "d:index", {"d:yomi": reading, "d:title": page.traditional, "d:value": reading})
 
-        for element in ElementTree.fromstring(html_page):
-            xml_page.append(element)
+        elif isinstance(page, EnglishEntry):
+            entry_node = ElementTree.SubElement(self.root, "d:entry", {"id": page.page_id, "d:title": page.page_title})
+            ElementTree.SubElement(entry_node, "d:index", {"d:title": page.page_title, "d:value": page.page_title})
 
-    def generate_page(self, page):
-        return self.templates[type(page)].render(entry=page)
+        # Create the page body using Jinja2
+        entry_html = self.templates[type(page)].render(entry=page)
+
+        # Append all page body elements onto the entry XML node
+        for element in ElementTree.fromstring(entry_html):
+            entry_node.append(element)
 
     def write(self, output_location: str):
         tree = ElementTree.ElementTree(self.root)
