@@ -31,11 +31,4 @@ CREATE TABLE Readings (
     id INT REFERENCES Entries,
     reading STRING      -- A single Cantonese reading relating to the entry at id
 )
-
--- Provides a combined view of all the tables
-CREATE VIEW Translations AS
-  SELECT id, traditional, simplified, definition, reading FROM
-    Definitions
-    NATURAL JOIN Readings
-    NATURAL JOIN Entries;
 ```

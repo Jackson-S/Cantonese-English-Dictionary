@@ -18,13 +18,6 @@ CREATE TABLE Readings (
     reading STRING      -- A single Cantonese reading relating to the entry at id
 )
 
--- Provides a combined view of all the tables
-CREATE VIEW Translations AS
-  SELECT id, traditional, simplified, definition, reading FROM
-    Definitions
-    NATURAL JOIN Readings
-    NATURAL JOIN Entries;
-
 Files to use with this converter can be found at:
 CC-Canto & CC-Canto readings: http://cccanto.org/download.html
 CC-CEDICT: https://www.mdbg.net/chinese/dictionary?page=cc-cedict
@@ -59,14 +52,6 @@ CREATE TABLE Readings (
     id INT REFERENCES Entries,
     reading STRING      -- A single Cantonese reading relating to the entry at id
 )
-""")
-
-cursor.execute("""
-CREATE VIEW Translations AS
- SELECT id, traditional, simplified, definition, reading FROM
-  Definitions
-  NATURAL JOIN Readings
-  NATURAL JOIN Entries;
 """)
 
 # Create a map of entries and their entry id
