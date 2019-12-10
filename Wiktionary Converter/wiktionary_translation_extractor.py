@@ -164,6 +164,7 @@ with open(sys.argv[1]) as in_file:
             # Begin parsing translations and get the meaning
             recording = True
             parameters = line.strip()[:-2].split("|")
+            parameters = [html.unescape(x) for x in parameters]
             meaning = ""
             if len(parameters) > 2 and parameters[1].startswith("id="):
                 meaning = parameters[2]
