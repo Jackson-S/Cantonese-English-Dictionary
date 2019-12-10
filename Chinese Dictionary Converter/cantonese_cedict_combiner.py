@@ -152,6 +152,8 @@ with open("cccanto-webdist.txt") as in_file:
 
         if (traditional, simplified, mandarin) in word_mappings:
             definition_id = word_mappings[(traditional, simplified, mandarin)]
+            cursor.execute("INSERT INTO Readings VALUES (?, ?)", (definition_id, cantonese))
+
             for definition in definitions:
                 cursor.execute("INSERT INTO Definitions VALUES (?, ?)", (definition_id, definition))
         else:
