@@ -112,9 +112,6 @@ with open("cccanto-webdist.txt") as in_file:
         if line.startswith("#"):
             continue
 
-        if "#" in line:
-            line = line[:line.index("#")].strip()
-
         # Parse lines of the format 
         # traditional simplified [Mandarin] /def1/def2/.../defn/
         traditional, simplified = line.split(" ")[:2]
@@ -138,6 +135,11 @@ with open("cccanto-webdist.txt") as in_file:
         if (traditional, simplified, mandarin) in word_mappings:
             definition_id = word_mappings[(traditional, simplified, mandarin)]
             cursor.execute("INSERT INTO Readings VALUES (?, ?)", (definition_id, cantonese))
+
+            # These lines are adapted from the original CC-CEDICT, and elaborate on already provided
+            # definitions, so previous definitions need to be removed
+            if "# adapted from cc-cedict" in line:
+                cursor.execute("DELETE FROM Definitions WHERE id=?", (definition_id,))
 
             for definition in definitions:
                 cursor.execute("INSERT INTO Definitions VALUES (?, ?)", (definition_id, definition))
