@@ -57,7 +57,7 @@ class TranslationGroup:
 
 def generate_arguments(arguments: List[str]) -> (List[str], Dict[str, str]):
     '''
-    Generate Lua positional and keyword arguments from a list
+    Parse arguments from the Wiktionary translation template format
     '''
     positional_arguments = list()
     keyword_arguments = dict()
@@ -65,7 +65,7 @@ def generate_arguments(arguments: List[str]) -> (List[str], Dict[str, str]):
     # Track if any positional arguments occur after keyword arguments (illegal)
     keywords = False
     
-    for argument in map(html.unescape ,arguments):
+    for argument in map(html.unescape, arguments):
         if "=" in argument:
             keywords = True
             split_index = argument.index("=")
