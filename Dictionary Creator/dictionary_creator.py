@@ -36,16 +36,20 @@ def create_cantonese_entries(database_path: str) -> List[CantoneseEntry]:
     db = sqlite3.connect(database_path)
     cursor = db.cursor()
 
-    query = cursor.execute("SELECT id, traditional, simplified, definition, reading FROM Translations")
-
     pages = {}
 
-    for id, traditional, simplified, definition, reading in query.fetchall():
-        if id not in pages:
-            pages[id] = CantoneseEntry(id, traditional, simplified)
-        
-        pages[id].add_reading(reading)
+    entry_query = cursor.execute("SELECT id, traditional, simplified FROM Entries")
+    for id, traditional, simplified in entry_query.fetchall():
+        pages[id] = CantoneseEntry(id, traditional, simplified)
+
+    definition_query = cursor.execute("SELECT id, definition FROM Definitions")
+    for id, definition in definition_query.fetchall():
         pages[id].add_definition(definition)
+
+
+    reading_query = cursor.execute("SELECT id, reading FROM Readings")
+    for id, reading in reading_query.fetchall():
+        pages[id].add_reading(reading)
     
     pages = [*filter(lambda x: x.is_worth_adding(), pages.values())]
 

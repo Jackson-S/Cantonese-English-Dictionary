@@ -45,7 +45,7 @@ class CantoneseEntry(Entry):
             self.readings.append(reading)
 
     def is_worth_adding(self) -> bool:
-        return len(self.readings) != 0
+        return len(self.readings) > 0 and len(self.definitions) > 0
 
 
 class EnglishEntry(Entry):
